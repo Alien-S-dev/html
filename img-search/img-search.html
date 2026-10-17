@@ -88,34 +88,54 @@
         const fileInput = document.getElementById('file-up');
         const userImg = document.getElementById('user-img');
         const resultText = document.querySelector('.result-side p');
-        fileInput.addEventListener('change',async function(event){
+
+        fileInput.addEventListener('change', async function (event) {
             const file = event.target.files[0];
-            if(file){
-                userImg.src = URL.createObjectURL(file);
-                userImg.style.display = 'block';
-                resultText.innerText = '正在寻找图源...';
-                const formData = new FormData();
-                formData.append('image', file);
-                try {
-                    const response = await fetch('http://localhost:3000/api/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await response.json();
-                    console.log('后端返回:', data);
-                    if(data.success){
+            if (!file) return;
+
+            userImg.src = URL.createObjectURL(file);
+            userImg.style.display = 'block';
+            resultText.innerText = '正在寻找图源...';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('http://localhost:3000/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                console.log('后端返回:', data);
+
+                if (data.success) {
+                    if (data.results && data.results.length > 0) {
+                        const listItems = data.results.map(item => `
+                            <li style="margin-bottom: 10px; text-align: left;">
+                                <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="color: #d2691e; font-weight: bold;">${item.title}</a>
+                                <br>
+                                <span style="font-size: 12px; color: #666;">
+                                    相似度: ${item.similarity} | 作者: ${item.author}
+                                </span>
+                            </li>
+                        `).join('');
+
                         resultText.innerHTML = `
-                            <p>${data.message}</p>
-                            <ul>
-                                <li><a href="${data.results[0].url}" target="_blank">${data.results[0].title}</a></li>
-                                <li><a href="${data.results[1].url}" target="_blank">${data.results[1].title}</a></li>
+                            <p style="color: green; font-weight: bold; margin-bottom: 15px;">✅ ${data.message}</p>
+                            <ul style="padding-left: 20px; overflow-y: auto; max-height: 400px;">
+                                ${listItems}
                             </ul>
-                        `;    
+                        `;
+                    } else {
+                        resultText.innerText = '😢 没找到相似结果，换张图试试？';
                     }
-                }catch (error) {
-                    console.error('上传失败:', error);
-                    resultText.innerText = '上传失败，请重试。';
+                } else {
+                    resultText.innerText = data.message || '😢 搜索失败';
                 }
+            } catch (error) {
+                console.error('上传失败:', error);
+                resultText.innerText = '😢 请求失败，请检查后端服务是否启动';
             }
         });
     </script>

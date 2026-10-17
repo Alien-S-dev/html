@@ -1,0 +1,6 @@
+Flask
+flask-cors
+PicImageSearch
+lxml
+gunicorn
+typing_extensions
