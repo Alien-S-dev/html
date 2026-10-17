@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻找图源</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #fffaf0;
+        }
+        h1{
+            text-align: center;
+            margin: 30px 0;
+            font-size: 3rem;
+            color: #333;
+        }
+        .main-box{
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 800px;
+            background-color: #ffeac1;
+            border: 2px solid #504134;
+            margin: 0 auto;
+        }
+        .upload-side,.result-side{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .upload-side{
+            border-right: 2px solid #504134;
+            gap: 20px;
+        }
+        .img-label{
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-icon{
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        #user-img{
+            max-width: 80%;
+            max-height: 250px;
+            object-fit: contain;
+        }
+        @media (max-width: 768px) {
+            .main-box{
+                flex-direction: column;
+                height: auto;
+            }
+            .upload-side{
+                border-right: none;
+                border-bottom: 2px solid #504134;
+                padding: 40px 20px;
+            }
+            .result-side{
+                min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>寻找图源</h1>
+    <div class="main-box">
+        <div class="upload-side">
+            <input type="file" id="file-up" style="display: none;">
+            <label for="file-up" class="img-label">
+                <img src="shangchuan.png" alt="上传图片" class="upload-icon">
+                <p>点击上传图片</p>
+            </label>
+            <img id="user-img" src="" alt="用户图片" style="display: none;">
+        </div>   
+        <div class="result-side">
+            <p>等待输出</p>
+        </div>
+    </div>
+</body>
+</html>
