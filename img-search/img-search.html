@@ -73,16 +73,51 @@
     <h1>寻找图源</h1>
     <div class="main-box">
         <div class="upload-side">
+            <img id="user-img" src="" alt="用户图片" style="display: none;">
             <input type="file" id="file-up" style="display: none;">
             <label for="file-up" class="img-label">
                 <img src="shangchuan.png" alt="上传图片" class="upload-icon">
                 <p>点击上传图片</p>
             </label>
-            <img id="user-img" src="" alt="用户图片" style="display: none;">
-        </div>   
+        </div>
         <div class="result-side">
             <p>等待输出</p>
         </div>
     </div>
+    <script>
+        const fileInput = document.getElementById('file-up');
+        const userImg = document.getElementById('user-img');
+        const resultText = document.querySelector('.result-side p');
+        fileInput.addEventListener('change',async function(event){
+            const file = event.target.files[0];
+            if(file){
+                userImg.src = URL.createObjectURL(file);
+                userImg.style.display = 'block';
+                resultText.innerText = '正在寻找图源...';
+                const formData = new FormData();
+                formData.append('image', file);
+                try {
+                    const response = await fetch('http://localhost:3000/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    console.log('后端返回:', data);
+                    if(data.success){
+                        resultText.innerHTML = `
+                            <p>${data.message}</p>
+                            <ul>
+                                <li><a href="${data.results[0].url}" target="_blank">${data.results[0].title}</a></li>
+                                <li><a href="${data.results[1].url}" target="_blank">${data.results[1].title}</a></li>
+                            </ul>
+                        `;    
+                    }
+                }catch (error) {
+                    console.error('上传失败:', error);
+                    resultText.innerText = '上传失败，请重试。';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
