@@ -54,7 +54,5 @@ async def search_saucenao(file_path):
             })
         return parsed_results
 if __name__ == '__main__':
-    # 动态获取云端分配的端口，如果没有，就默认用 7860
-    port = int(os.environ.get("PORT", 7860))
-    # 监听 0.0.0.0 允许外部访问
+    port = int(os.environ.get("PORT", 3000))
     backend.run(host="0.0.0.0", port=port)
